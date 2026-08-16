@@ -12,6 +12,28 @@
     <h1>Cone Engine Web Runtime</h1>
     <canvas id="gameCanvas" width="640" height="480"></canvas>
 
+    <!-- Load Firebase SDK Modules -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyCzsTF-kiR_jCOJMLfonV6BNemreeT7v-g",
+          authDomain: "cone-engine.firebaseapp.com",
+          projectId: "cone-engine",
+          storageBucket: "cone-engine.firebasestorage.app",
+          messagingSenderId: "733009087130",
+          appId: "1:733009087130:web:a097a8ab7285a2058bed23",
+          measurementId: "G-MF9Q67FKHJ"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+
+    <!-- Engine & Compiler Scripts -->
     <script src="dc-compiler.js"></script>
     <script src="cone-engine.js"></script>
     <script>
