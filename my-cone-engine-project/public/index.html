@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cone Engine - Double C* Scripting</title>
+    <style>
+        body { background: #111; color: white; text-align: center; font-family: sans-serif; }
+        canvas { border: 2px solid #00c8ff; background: #1e1e23; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Cone Engine Web Runtime</h1>
+    <canvas id="gameCanvas" width="640" height="480"></canvas>
+
+    <script src="dc-compiler.js"></script>
+    <script src="cone-engine.js"></script>
+    <script>
+        async function boot() {
+            const engine = new ConeEngine('gameCanvas');
+
+            // Load .dc* script file
+            const response = await fetch('player.dc*');
+            const dcScript = await response.text();
+
+            // Compile Double C* to executable scope
+            const compiledFn = DoubleCCompiler.compile(dcScript);
+            const scriptScope = compiledFn(engine);
+
+            // Setup Entity & ECS
+            const player = new Entity("Player");
+            player.addComponent(new Transform(300, 220));
+            player.addComponent(new ScriptComponent(scriptScope));
+
+            if (scriptScope.on_start) scriptScope.on_start();
+
+            engine.addEntity(player);
+            engine.start();
+        }
+        boot();
+    </script>
+</body>
+</html>
