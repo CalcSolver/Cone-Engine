@@ -29,17 +29,18 @@ class DoubleCCompiler {
         }
 
         jsLines.push("return scope;");
-        return new Function('engine', jsLines.join('\n'));
+        return new Function('engine', 'entity', jsLines.join('\n'));
     }
 
     static parseLine(line) {
         line = line.replace(/print\s+"(.*)"/, 'engine.print("$1")');
+        line = line.replace(/OpenWebsite\("(.*?)"\)/, 'window.open("$1", "_blank")');
         line = line.replace(/move\((.*?),\s*(.*?)\)/, 'engine.move(entity, $1, $2)');
 
         const keyMatch = line.match(/if\s+key\s+(\w+)\s*\{\s*(.*?)\s*\}/);
         if (keyMatch) {
             const [, key, action] = keyMatch;
-            return `if (keys['Key${key}'] || keys['Key${key}'.toLowerCase()]) { ${this.parseLine(action)} }`;
+            return `if (keys['Key${key.toUpperCase()}'] || keys['Key${key.toLowerCase()}']) { ${this.parseLine(action)} }`;
         }
         return line;
     }
