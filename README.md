@@ -1,14 +1,15 @@
-# PolyEngine 3D Pro Studio (v3.0)
+# PolyEngine 3D Pro Studio (v4.0)
 
-A WebGL game engine designed for Vercel deployment featuring an Apple-inspired glassmorphism studio interface.
+A multi-project low-poly WebGL studio with isolated object keyframing and integrated 3D gizmo controls for Vercel deployment.
 
-## Upgrades in v3.0
-- **Fixed Render Lifecycles:** Canvas elements automatically trigger layout recalculations when switching tabs.
-- **Pointer-Lock 3D Navigation:** Left-click the canvas to lock the mouse for FPS-style camera control without requiring right-clicks.
-- **Object Inspector & Inspector Keyframing:** Double-click any 3D object to select it, inspect exact X/Y/Z positions, modify coordinates, and capture keyframes.
-- **Firestore Publishing Sync:** Publishing pushes documents directly to `community_games` with an automated refresh cycle.
+## Upgrades in v4.0
+- **Right-Click Camera Orbiting & Left-Click Mesh Selection:** Right-click and drag rotates your perspective without pointer lock. Left-clicking meshes highlights them with emissive outlines.
+- **3D Transform Gizmo:** Intersecting 3D arrows appear over selected meshes, allowing manual dragging along the X, Y, or Z axes.
+- **Independent Per-Object & Character Timeline:** Keyframes are saved independently for each individual mesh and character part rather than globally.
+- **Project Management Architecture:** Features an explicit "My Projects" dashboard for creating, naming, editing, saving, and deleting multi-file projects stored directly under user accounts in Firestore.
+- **Color & Uniform Resizing:** Inspect, recolor, and scale selected items on the fly using input fields or quick uniform scaling triggers.
 
-## Local Running
+## Deployment & Setup
 ```bash
 npm install
 npm run dev
