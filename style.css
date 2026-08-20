@@ -1,0 +1,109 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #121212;
+  color: #fff;
+}
+#viewport {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+/* UI Overlay Panels */
+#ui-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: 260px 1fr 300px;
+  grid-template-rows: 40px 1fr 180px;
+}
+.panel {
+  background: rgba(24, 24, 24, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid #2a2a2a;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
+
+/* Top Toolbar */
+#toolbar {
+  grid-column: 1 / 4;
+  grid-row: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: #1a1a1a;
+}
+.logo {
+  font-weight: bold;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: #007acc;
+}
+.btn-group {
+  display: flex;
+  gap: 8px;
+}
+button {
+  background: #282828;
+  border: 1px solid #3a3a3a;
+  color: #eee;
+  padding: 5px 12px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+button:hover {
+  background: #007acc;
+  border-color: #007acc;
+}
+button.playing {
+  background: #dc3545 !important;
+  border-color: #dc3545 !important;
+}
+
+/* Sidebar & Inspection */
+#hierarchy { grid-column: 1; grid-row: 2; padding: 12px; }
+#inspector { grid-column: 3; grid-row: 2 / 4; padding: 12px; }
+#timeline { grid-column: 1 / 3; grid-row: 3; padding: 12px; border-top: 1px solid #2a2a2a; }
+
+.panel-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+  margin-bottom: 10px;
+}
+#tree-view { flex: 1; overflow-y: auto; list-style: none; }
+.tree-node {
+  padding: 6px 8px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 2px;
+  background: #1e1e1e;
+}
+.tree-node:hover, .tree-node.selected { background: #007acc; }
+
+#console-log {
+  font-family: monospace;
+  font-size: 11px;
+  color: #00ff66;
+}
