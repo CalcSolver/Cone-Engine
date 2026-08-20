@@ -3,15 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PolyEngine 3D Studio</title>
+    <title>PolyEngine 3D Pro Studio</title>
     <link rel="stylesheet" href="/src/styles/main.css" />
   </head>
   <body>
-    <!-- Auth Shield Screen (Mandatory Login Gate) -->
+    <!-- Auth Shield Screen -->
     <div id="auth-gate" class="auth-gate">
       <div class="auth-card">
-        <h1>PolyEngine Studio</h1>
-        <p>Sign in to access the editor, create 3D worlds, and play community games.</p>
+        <div class="brand">
+          <div class="logo-icon"></div>
+          <h1>PolyEngine Studio</h1>
+        </div>
+        <p>Sign in to access your 3D workspace, publish creations, and play games.</p>
         <div class="form-group">
           <input type="email" id="email-input" placeholder="Email Address" />
           <input type="password" id="pass-input" placeholder="Password" />
@@ -28,20 +31,21 @@
       </div>
     </div>
 
-    <!-- Main Workspace (Hidden until authenticated) -->
+    <!-- Main Studio Interface -->
     <div id="app" class="hidden">
       <header class="navbar">
         <div class="logo-area">
+          <div class="app-icon"></div>
           <h2>PolyEngine Studio</h2>
-          <span class="badge">v2.0</span>
+          <span class="badge">Pro Edition</span>
         </div>
         <div class="tab-controls">
-          <button id="tab-editor" class="tab-btn active">Editor Mode</button>
+          <button id="tab-editor" class="tab-btn active">World Editor</button>
           <button id="tab-character" class="tab-btn">Character Builder</button>
           <button id="tab-community" class="tab-btn">Community Games</button>
         </div>
         <div class="user-profile">
-          <span id="user-display">User</span>
+          <span id="user-display">Connecting...</span>
           <button id="logout-btn" class="btn small">Logout</button>
         </div>
       </header>
@@ -51,29 +55,45 @@
         <div id="view-editor" class="workspace-view active">
           <aside class="sidebar">
             <div class="panel-section">
-              <h3>Spawn Objects</h3>
-              <button id="add-cube-btn">Add Cube Block</button>
-              <button id="add-sphere-btn">Add Sphere</button>
-              <button id="add-npc-btn">Add NPC Character</button>
+              <h3>Object Spawner</h3>
+              <div class="grid-buttons">
+                <button id="add-cube-btn">+ Cube</button>
+                <button id="add-sphere-btn">+ Sphere</button>
+                <button id="add-npc-btn" class="full-width">+ Interactive NPC</button>
+              </div>
+            </div>
+
+            <div id="inspector-panel" class="panel-section hidden">
+              <h3>Object Inspector</h3>
+              <div class="inspector-card">
+                <div class="field"><label>Selected:</label><span id="inspect-type">-</span></div>
+                <div class="field"><label>X:</label><input type="number" id="pos-x" step="0.1"></div>
+                <div class="field"><label>Y:</label><input type="number" id="pos-y" step="0.1"></div>
+                <div class="field"><label>Z:</label><input type="number" id="pos-z" step="0.1"></div>
+                <button id="delete-selected-btn" class="btn danger small">Delete Object</button>
+              </div>
             </div>
             
             <div class="panel-section">
-              <h3>Animation Keyframes</h3>
-              <button id="add-frame-btn" class="accent">Capture Frame</button>
-              <button id="play-anim-btn">Play Animation Loop</button>
+              <h3>Animation Timeline</h3>
+              <p class="section-desc">Click an object, place it, then add a frame to keyframe its motion.</p>
+              <button id="add-frame-btn" class="btn accent">+ Add Keyframe</button>
+              <button id="play-anim-btn" class="btn secondary">Play / Stop Loop</button>
               <div id="frame-list" class="frame-list"></div>
             </div>
 
             <div class="panel-section">
               <h3>Cloud Persistence</h3>
-              <button id="save-scene-btn" class="primary">Save Project</button>
-              <button id="publish-game-btn" class="secondary">Upload to Community</button>
+              <button id="save-scene-btn" class="btn primary">Save Project</button>
+              <button id="publish-game-btn" class="btn secondary">Publish to Community</button>
             </div>
           </aside>
 
           <section class="canvas-container">
             <div class="controls-overlay">
-              <span>Navigation: WASD / Arrows to Move | Right-Click + Drag to Look</span>
+              <span class="pill"><strong>Move Camera:</strong> WASD / Arrows</span>
+              <span class="pill"><strong>Rotate Look:</strong> Click Canvas + Drag</span>
+              <span class="pill"><strong>Select Object:</strong> Click Mesh</span>
             </div>
             <canvas id="render-canvas"></canvas>
           </section>
@@ -82,14 +102,18 @@
         <!-- Character Editor View -->
         <div id="view-character" class="workspace-view">
           <aside class="sidebar">
-            <h3>Character Parts</h3>
-            <button id="char-add-nose">Add Nose Block</button>
-            <button id="char-add-eye">Add Eye Block</button>
-            <button id="char-add-hat">Add Hat Block</button>
-            <button id="char-add-arm">Add Arm Block</button>
-            <hr />
-            <button id="char-reset">Reset Character</button>
-            <button id="char-save" class="primary">Attach Character to Scene</button>
+            <div class="panel-section">
+              <h3>Character Assembly</h3>
+              <p class="section-desc">Build your low-poly avatar with voxel geometry attachments.</p>
+              <button id="char-add-nose">+ Add Nose</button>
+              <button id="char-add-eye">+ Add Eye Block</button>
+              <button id="char-add-hat">+ Add Hat Block</button>
+              <button id="char-add-arm">+ Add Arm Extension</button>
+            </div>
+            <div class="panel-section">
+              <button id="char-reset" class="btn danger small">Reset Character</button>
+              <button id="char-save" class="btn primary">Attach Character to Scene</button>
+            </div>
           </aside>
           <section class="canvas-container">
             <canvas id="character-canvas"></canvas>
@@ -100,13 +124,15 @@
         <div id="view-community" class="workspace-view">
           <div class="community-layout">
             <div class="games-sidebar">
-              <h3>Community Catalog</h3>
-              <button id="refresh-games-btn">Refresh List</button>
+              <div class="sidebar-header">
+                <h3>Community Games</h3>
+                <button id="refresh-games-btn" class="btn small">Refresh</button>
+              </div>
               <div id="games-list" class="games-list"></div>
             </div>
             <div class="game-player">
               <div class="player-header">
-                <h3 id="playing-title">Select a game to play</h3>
+                <h3 id="playing-title">Select a game from the catalog to play</h3>
               </div>
               <div class="player-canvas-container">
                 <canvas id="player-canvas"></canvas>
