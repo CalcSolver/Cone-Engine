@@ -1,7 +1,9 @@
 import { 
   auth, 
+  googleProvider,
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
+  signInWithPopup,
   signOut, 
   onAuthStateChanged 
 } from '../lib/firebase.js';
@@ -23,6 +25,10 @@ export class AuthManager {
 
   async login(email, password) {
     return await signInWithEmailAndPassword(auth, email, password);
+  }
+
+  async loginWithGoogle() {
+    return await signInWithPopup(auth, googleProvider);
   }
 
   async logout() {
