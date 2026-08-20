@@ -239,8 +239,65 @@ input:focus {
   display: flex;
 }
 
+/* Projects Screen */
+.projects-container {
+  padding: 2rem;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.projects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: var(--glass-border);
+  padding-bottom: 1rem;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.project-card {
+  background: var(--panel-solid);
+  border: var(--glass-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: all 0.2s;
+}
+
+.project-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.project-card h4 {
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.project-card p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.project-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
 .sidebar {
-  width: 280px;
+  width: 290px;
   background-color: var(--panel-solid);
   border-right: var(--glass-border);
   padding: 1.25rem;
@@ -313,10 +370,19 @@ input:focus {
   font-size: 0.8rem;
 }
 
-.inspector-card input {
+.inspector-card input[type="number"] {
   width: 70px;
   padding: 0.25rem 0.4rem;
   font-size: 0.8rem;
+}
+
+.inspector-card input[type="color"] {
+  border: none;
+  width: 40px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  background: transparent;
 }
 
 .canvas-container {
@@ -330,6 +396,7 @@ input:focus {
   top: 1rem;
   left: 1rem;
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   pointer-events: none;
   z-index: 10;
