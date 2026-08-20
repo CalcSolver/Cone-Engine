@@ -1,15 +1,14 @@
-# PolyEngine 3D Studio (v2.0)
+# PolyEngine 3D Pro Studio (v3.0)
 
-A comprehensive low-poly WebGL game development engine inspired by GDevelop and Roblox, engineered for web deployments on Vercel.
+A WebGL game engine designed for Vercel deployment featuring an Apple-inspired glassmorphism studio interface.
 
-## Integrated System Blueprint
-- **Strict Authentication Gate:** Unauthenticated visitors are blocked by a secure Auth Gate supporting Email/Password and Google OAuth.
-- **Engine View & Keyframes:** Place objects/NPCs and record frame-by-frame transformation states to build looping animations.
-- **Character Editor:** Construct 3D avatars with modular blocks (noses, eyes, body parts).
-- **Active Firestore Sync:** Save individual work files or push complete scenes to the global Community Catalog.
-- **Native WASD Movement:** Move seamlessly in 3D space with keyboard controls and right-click viewport rotations.
+## Upgrades in v3.0
+- **Fixed Render Lifecycles:** Canvas elements automatically trigger layout recalculations when switching tabs.
+- **Pointer-Lock 3D Navigation:** Left-click the canvas to lock the mouse for FPS-style camera control without requiring right-clicks.
+- **Object Inspector & Inspector Keyframing:** Double-click any 3D object to select it, inspect exact X/Y/Z positions, modify coordinates, and capture keyframes.
+- **Firestore Publishing Sync:** Publishing pushes documents directly to `community_games` with an automated refresh cycle.
 
-## Local Deployment
+## Local Running
 ```bash
 npm install
 npm run dev
