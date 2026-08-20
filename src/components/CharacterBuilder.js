@@ -1,8 +1,14 @@
 import * as THREE from 'three';
 
 export class CharacterBuilder {
-  constructor(canvas) {
+  constructor(canvas, onSelectCallback) {
     this.canvas = canvas;
+    this.onSelectCallback = onSelectCallback;
+    this.parts = [];
+    this.keyframes = [];
+    this.selectedPart = null;
+    this.isAnimating = false;
+
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x090d16);
 
@@ -16,8 +22,12 @@ export class CharacterBuilder {
     this.characterGroup = new THREE.Group();
     this.scene.add(this.characterGroup);
 
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
+
     this.setupLighting();
     this.buildBaseMesh();
+    this.setupSelection();
     this.animate();
   }
 
@@ -46,6 +56,25 @@ export class CharacterBuilder {
     this.characterGroup.add(head);
   }
 
+  setupSelection() {
+    this.canvas.addEventListener('click', (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      this.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      this.mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      this.raycaster.setFromCamera(this.mouse, this.camera);
+      const intersects = this.raycaster.intersectObjects(this.parts);
+
+      if (intersects.length > 0) {
+        this.selectedPart = intersects[0].object;
+        if (this.onSelectCallback) this.onSelectCallback(this.selectedPart);
+      } else {
+        this.selectedPart = null;
+        if (this.onSelectCallback) this.onSelectCallback(null);
+      }
+    });
+  }
+
   addNose() {
     const head = this.characterGroup.getObjectByName("head");
     if (!head) return;
@@ -55,6 +84,7 @@ export class CharacterBuilder {
     );
     nose.position.set(0, 0, 0.35);
     head.add(nose);
+    this.parts.push(nose);
   }
 
   addEye() {
@@ -66,6 +96,7 @@ export class CharacterBuilder {
     );
     eye.position.set(0.15, 0.1, 0.31);
     head.add(eye);
+    this.parts.push(eye);
   }
 
   addHat() {
@@ -77,6 +108,7 @@ export class CharacterBuilder {
     );
     hat.position.set(0, 0.35, 0);
     head.add(hat);
+    this.parts.push(hat);
   }
 
   addArm() {
@@ -86,13 +118,59 @@ export class CharacterBuilder {
     );
     arm.position.set(0.6, 1, 0);
     this.characterGroup.add(arm);
+    this.parts.push(arm);
+  }
+
+  deleteSelectedPart() {
+    if (!this.selectedPart) return;
+    if (this.selectedPart.parent) this.selectedPart.parent.remove(this.selectedPart);
+    this.parts = this.parts.filter(p => p !== this.selectedPart);
+    this.selectedPart = null;
+    if (this.onSelectCallback) this.onSelectCallback(null);
+  }
+
+  capturePoseKeyframe() {
+    const frame = {
+      rotation: this.characterGroup.rotation.toArray(),
+      parts: this.parts.map(p => ({ pos: p.position.toArray(), rot: p.rotation.toArray() }))
+    };
+    this.keyframes.push(frame);
+    return this.keyframes.length;
+  }
+
+  togglePoseAnimation() {
+    if (this.keyframes.length === 0) return;
+    this.isAnimating = !this.isAnimating;
+
+    if (!this.isAnimating) return;
+
+    let index = 0;
+    const interval = setInterval(() => {
+      if (!this.isAnimating) {
+        clearInterval(interval);
+        return;
+      }
+      const frame = this.keyframes[index];
+      this.characterGroup.rotation.fromArray(frame.rotation);
+      frame.parts.forEach((saved, i) => {
+        if (this.parts[i]) {
+          this.parts[i].position.fromArray(saved.pos);
+          this.parts[i].rotation.fromArray(saved.rot);
+        }
+      });
+      index = (index + 1) % this.keyframes.length;
+    }, 500);
   }
 
   reset() {
     this.scene.remove(this.characterGroup);
     this.characterGroup = new THREE.Group();
     this.scene.add(this.characterGroup);
+    this.parts = [];
+    this.keyframes = [];
+    this.selectedPart = null;
     this.buildBaseMesh();
+    if (this.onSelectCallback) this.onSelectCallback(null);
   }
 
   onResize() {
@@ -108,7 +186,7 @@ export class CharacterBuilder {
 
   animate() {
     requestAnimationFrame(() => this.animate());
-    this.characterGroup.rotation.y += 0.01;
+    if (!this.isAnimating) this.characterGroup.rotation.y += 0.005;
     this.renderer.render(this.scene, this.camera);
   }
 }
