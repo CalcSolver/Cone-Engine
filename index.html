@@ -14,7 +14,7 @@
           <div class="logo-icon"></div>
           <h1>PolyEngine Studio</h1>
         </div>
-        <p>Sign in to access your 3D workspace, publish creations, and play games.</p>
+        <p>Sign in to create multi-project 3D worlds, animate meshes, and share games.</p>
         <div class="form-group">
           <input type="email" id="email-input" placeholder="Email Address" />
           <input type="password" id="pass-input" placeholder="Password" />
@@ -37,10 +37,11 @@
         <div class="logo-area">
           <div class="app-icon"></div>
           <h2>PolyEngine Studio</h2>
-          <span class="badge">Pro Edition</span>
+          <span class="badge" id="active-project-badge">No Project Open</span>
         </div>
         <div class="tab-controls">
-          <button id="tab-editor" class="tab-btn active">World Editor</button>
+          <button id="tab-projects" class="tab-btn active">My Projects</button>
+          <button id="tab-editor" class="tab-btn">World Editor</button>
           <button id="tab-character" class="tab-btn">Character Builder</button>
           <button id="tab-community" class="tab-btn">Community Games</button>
         </div>
@@ -51,8 +52,19 @@
       </header>
 
       <main class="workspace">
+        <!-- Projects View -->
+        <div id="view-projects" class="workspace-view active">
+          <div class="projects-container">
+            <div class="projects-header">
+              <h2>Account Projects</h2>
+              <button id="create-project-btn" class="btn primary">+ New Project</button>
+            </div>
+            <div id="projects-grid" class="projects-grid"></div>
+          </div>
+        </div>
+
         <!-- Editor View -->
-        <div id="view-editor" class="workspace-view active">
+        <div id="view-editor" class="workspace-view">
           <aside class="sidebar">
             <div class="panel-section">
               <h3>Object Spawner</h3>
@@ -66,24 +78,38 @@
             <div id="inspector-panel" class="panel-section hidden">
               <h3>Object Inspector</h3>
               <div class="inspector-card">
-                <div class="field"><label>Selected:</label><span id="inspect-type">-</span></div>
-                <div class="field"><label>X:</label><input type="number" id="pos-x" step="0.1"></div>
-                <div class="field"><label>Y:</label><input type="number" id="pos-y" step="0.1"></div>
-                <div class="field"><label>Z:</label><input type="number" id="pos-z" step="0.1"></div>
-                <button id="delete-selected-btn" class="btn danger small">Delete Object</button>
+                <div class="field"><label>Type:</label><span id="inspect-type">-</span></div>
+                <div class="field">
+                  <label>Color:</label>
+                  <input type="color" id="inspect-color" value="#6366f1">
+                </div>
+                <div class="field">
+                  <label>Scale X:</label>
+                  <input type="number" id="scale-x" step="0.1" value="1">
+                </div>
+                <div class="field">
+                  <label>Scale Y:</label>
+                  <input type="number" id="scale-y" step="0.1" value="1">
+                </div>
+                <div class="field">
+                  <label>Scale Z:</label>
+                  <input type="number" id="scale-z" step="0.1" value="1">
+                </div>
+                <button id="resize-btn" class="btn secondary small">Quick Uniform Resize (1.5x)</button>
+                <button id="delete-selected-btn" class="btn danger small">Delete Mesh</button>
               </div>
             </div>
             
             <div class="panel-section">
-              <h3>Animation Timeline</h3>
-              <p class="section-desc">Click an object, place it, then add a frame to keyframe its motion.</p>
-              <button id="add-frame-btn" class="btn accent">+ Add Keyframe</button>
-              <button id="play-anim-btn" class="btn secondary">Play / Stop Loop</button>
+              <h3>Object Timeline (Mesh Frames)</h3>
+              <p class="section-desc">Each object stores its own keyframes. Select a mesh to view/add frames.</p>
+              <button id="add-frame-btn" class="btn accent">+ Add Frame for Selected</button>
+              <button id="play-anim-btn" class="btn secondary">Play/Stop Selected Anim</button>
               <div id="frame-list" class="frame-list"></div>
             </div>
 
             <div class="panel-section">
-              <h3>Cloud Persistence</h3>
+              <h3>Cloud Sync</h3>
               <button id="save-scene-btn" class="btn primary">Save Project</button>
               <button id="publish-game-btn" class="btn secondary">Publish to Community</button>
             </div>
@@ -92,8 +118,9 @@
           <section class="canvas-container">
             <div class="controls-overlay">
               <span class="pill"><strong>Move Camera:</strong> WASD / Arrows</span>
-              <span class="pill"><strong>Rotate Look:</strong> Click Canvas + Drag</span>
-              <span class="pill"><strong>Select Object:</strong> Click Mesh</span>
+              <span class="pill"><strong>Rotate Look:</strong> Right-Click + Drag</span>
+              <span class="pill"><strong>Select Mesh:</strong> Left-Click Mesh</span>
+              <span class="pill"><strong>3D Arrows:</strong> Drag Axis Arrows to Move Mesh</span>
             </div>
             <canvas id="render-canvas"></canvas>
           </section>
@@ -103,13 +130,31 @@
         <div id="view-character" class="workspace-view">
           <aside class="sidebar">
             <div class="panel-section">
-              <h3>Character Assembly</h3>
-              <p class="section-desc">Build your low-poly avatar with voxel geometry attachments.</p>
+              <h3>Character Voxel Attachments</h3>
               <button id="char-add-nose">+ Add Nose</button>
               <button id="char-add-eye">+ Add Eye Block</button>
               <button id="char-add-hat">+ Add Hat Block</button>
               <button id="char-add-arm">+ Add Arm Extension</button>
             </div>
+
+            <div id="char-inspector-panel" class="panel-section hidden">
+              <h3>Part Inspector</h3>
+              <div class="inspector-card">
+                <div class="field">
+                  <label>Color:</label>
+                  <input type="color" id="char-inspect-color" value="#ffffff">
+                </div>
+                <button id="char-delete-part" class="btn danger small">Remove Attachment</button>
+              </div>
+            </div>
+
+            <div class="panel-section">
+              <h3>Character Keyframes</h3>
+              <button id="char-add-frame-btn" class="btn accent">+ Capture Character Pose</button>
+              <button id="char-play-anim-btn" class="btn secondary">Play Pose Loop</button>
+              <div id="char-frame-list" class="frame-list"></div>
+            </div>
+
             <div class="panel-section">
               <button id="char-reset" class="btn danger small">Reset Character</button>
               <button id="char-save" class="btn primary">Attach Character to Scene</button>
@@ -125,7 +170,7 @@
           <div class="community-layout">
             <div class="games-sidebar">
               <div class="sidebar-header">
-                <h3>Community Games</h3>
+                <h3>Community Catalog</h3>
                 <button id="refresh-games-btn" class="btn small">Refresh</button>
               </div>
               <div id="games-list" class="games-list"></div>
