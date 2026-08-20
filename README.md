@@ -1,15 +1,15 @@
-# PolyEngine 3D
+# PolyEngine 3D Studio (v2.0)
 
-A lightweight, low-poly 3D WebGL game engine/sandbox inspired by Roblox. Built using Three.js and Firebase.
+A comprehensive low-poly WebGL game development engine inspired by GDevelop and Roblox, engineered for web deployments on Vercel.
 
-## Features
-- **3D Sandbox Builder:** Spawn low-poly shapes (cubes, spheres) dynamically.
-- **Account System:** User authentication powered by Firebase Auth.
-- **Cloud Database:** Save and load custom world layouts linked to user accounts via Firebase Firestore.
-- **Vercel Deployment Ready:** Bundled with Vite and zero custom setup needed.
+## Integrated System Blueprint
+- **Strict Authentication Gate:** Unauthenticated visitors are blocked by a secure Auth Gate supporting Email/Password and Google OAuth.
+- **Engine View & Keyframes:** Place objects/NPCs and record frame-by-frame transformation states to build looping animations.
+- **Character Editor:** Construct 3D avatars with modular blocks (noses, eyes, body parts).
+- **Active Firestore Sync:** Save individual work files or push complete scenes to the global Community Catalog.
+- **Native WASD Movement:** Move seamlessly in 3D space with keyboard controls and right-click viewport rotations.
 
-## Setup Instructions
-1. Replace the placeholder config in `src/lib/firebase.js` with your Firebase project API keys.
-2. Install dependencies:
-   ```bash
-   npm install
+## Local Deployment
+```bash
+npm install
+npm run dev
