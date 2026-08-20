@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PolyEngine 3D</title>
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="navbar">
+        <h1>PolyEngine 3D</h1>
+        <div id="user-controls">
+          <span id="user-display">Not logged in</span>
+          <button id="auth-btn">Login / Register</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="sidebar">
+          <h3>Tools</h3>
+          <button id="add-cube-btn">Add Cube</button>
+          <button id="add-sphere-btn">Add Sphere</button>
+          <button id="clear-btn" class="danger">Clear World</button>
+          <hr />
+          <h3>Cloud Data</h3>
+          <button id="save-btn" class="primary">Save World</button>
+          <button id="load-btn">Load World</button>
+        </aside>
+
+        <section class="canvas-container">
+          <canvas id="render-canvas"></canvas>
+        </section>
+      </main>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal hidden">
+      <div class="modal-content">
+        <span id="close-modal" class="close-btn">&times;</span>
+        <h2 id="modal-title">Account</h2>
+        <input type="email" id="auth-email" placeholder="Email" />
+        <input type="password" id="auth-password" placeholder="Password" />
+        <div class="modal-actions">
+          <button id="login-action-btn">Sign In</button>
+          <button id="signup-action-btn">Sign Up</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
