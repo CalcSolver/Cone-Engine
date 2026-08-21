@@ -1,3 +1,7 @@
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TransformControls } from 'three/addons/controls/TransformControls.js';
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
@@ -28,74 +32,52 @@ function initEngine() {
   const canvas = document.getElementById("viewport");
   scene = new THREE.Scene();
   
-  // 1. Dark Studio Gradient Background
   scene.background = new THREE.Color(0x0e0e11);
   scene.fog = new THREE.FogExp2(0x0e0e11, 0.03);
 
-  // 2. High-Tech Infinite Floor Grid
   const gridHelper = new THREE.GridHelper(60, 60, 0x007acc, 0x22222a);
-  gridHelper.position.y = 0;
   scene.add(gridHelper);
 
-  // 3. Cinematic Studio Lighting (Key, Fill, and Rim lights)
   const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
   keyLight.position.set(10, 20, 15);
-  keyLight.castShadow = true;
   scene.add(keyLight);
 
   const fillLight = new THREE.PointLight(0x007acc, 1.5, 30);
   fillLight.position.set(-10, 8, -10);
   scene.add(fillLight);
 
-  const rimLight = new THREE.DirectionalLight(0xff0055, 0.8);
-  rimLight.position.set(0, 10, -20);
-  scene.add(rimLight);
-
   const ambientLight = new THREE.AmbientLight(0x1a1a24, 1.0);
   scene.add(ambientLight);
 
-  // Camera & Renderer
   camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 8, 14);
 
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
-  // Viewport Controls
-  orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+  orbitControls = new OrbitControls(camera, renderer.domElement);
   orbitControls.enableDamping = true;
-  orbitControls.dampingFactor = 0.05;
 
-  // Transform Gizmo (Movement Arrows)
-  transformControls = new THREE.TransformControls(camera, renderer.domElement);
+  transformControls = new TransformControls(camera, renderer.domElement);
   transformControls.addEventListener('dragging-changed', (e) => { orbitControls.enabled = !e.value; });
   scene.add(transformControls);
 
-  // Selected Object Hitbox Outline
   selectionBox = new THREE.BoxHelper();
   selectionBox.material.color.setHex(0x00ffcc);
   selectionBox.visible = false;
   scene.add(selectionBox);
 
-  // Mouse Pick Listener
   canvas.addEventListener('pointerdown', onPointerDown);
 
-  // Spawn Initial Hero Mesh (Stylized Metallic Complex Object instead of plain cube)
   spawnHeroMesh();
 
-  // Animation Loop
   function animate() {
     requestAnimationFrame(animate);
     orbitControls.update();
 
     if (isPlaying) {
-      sceneObjects.forEach(obj => {
-        obj.rotation.y += 0.01;
-      });
+      sceneObjects.forEach(obj => { obj.rotation.y += 0.01; });
     }
 
     if (selectedObject) {
@@ -107,25 +89,20 @@ function initEngine() {
   animate();
 }
 
-// Spawns a multi-part demo asset so the viewport instantly looks like a real project
 function spawnHeroMesh() {
   const group = new THREE.Group();
   group.name = "Hero_Character_Node";
 
-  // Base Pedestal
   const baseGeo = new THREE.CylinderGeometry(2, 2.2, 0.4, 32);
   const baseMat = new THREE.MeshStandardMaterial({ color: 0x1f1f2e, roughness: 0.3, metalness: 0.8 });
   const base = new THREE.Mesh(baseGeo, baseMat);
   base.position.y = 0.2;
-  base.receiveShadow = true;
   group.add(base);
 
-  // Glowing Core
   const coreGeo = new THREE.IcosahedronGeometry(1, 2);
   const coreMat = new THREE.MeshStandardMaterial({ color: 0x007acc, roughness: 0.1, metalness: 0.9, wireframe: true });
   const core = new THREE.Mesh(coreGeo, coreMat);
   core.position.y = 1.8;
-  core.castShadow = true;
   group.add(core);
 
   scene.add(group);
@@ -171,7 +148,6 @@ function updateUI() {
   });
 }
 
-// Button Bindings
 document.getElementById("add-mesh-btn")?.addEventListener("click", () => {
   const mesh = new THREE.Mesh(
     new THREE.TorusKnotGeometry(0.6, 0.2, 64, 16),
@@ -179,7 +155,6 @@ document.getElementById("add-mesh-btn")?.addEventListener("click", () => {
   );
   mesh.name = `Mesh_Node_${sceneObjects.length + 1}`;
   mesh.position.set((Math.random() - 0.5) * 6, 1.5, (Math.random() - 0.5) * 6);
-  mesh.castShadow = true;
   
   scene.add(mesh);
   sceneObjects.push(mesh);
